@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthConnect - Rural Telemedicine Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-banner hidden">
+        🔴 You are offline. Some features are unavailable.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h2>🏥 HealthConnect</h2>
+                </div>
+                <nav class="nav" id="nav">
+                    <a href="#" class="nav-link active" data-section="home">Home</a>
+                    <a href="#" class="nav-link" data-section="dashboard">Dashboard</a>
+                    <a href="#" class="nav-link" data-section="consultation">Book Consultation</a>
+                    <a href="#" class="nav-link" data-section="records">Health Records</a>
+                    <a href="#" class="nav-link" data-section="pharmacy">Pharmacy Locator</a>
+                    <a href="#" class="nav-link" data-section="symptom-checker">AI Symptom Checker</a>
+                    <a href="#" class="nav-link">About</a>
+                </nav>
+                <div class="header-actions">
+                    <select id="languageSelect" class="form-control">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="pa">ਪੰਜਾਬੀ</option>
+                    </select>
+                    <button id="loginBtn" class="btn btn--outline">Login</button>
+                    <button id="emergencyBtn" class="btn btn--danger">🚨 Emergency</button>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="container">
+                <div class="hero">
+                    <h1>Telemedicine Access for Rural Healthcare in Nabha</h1>
+                    <p>Easy video consultations, digital health records, pharmacy finder, and AI symptom checker for Punjab's villages.</p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">173+</span>
+                            <span class="stat-label">Villages Served</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Availability</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">11</span>
+                            <span class="stat-label">Doctors Available</span>
+                        </div>
+                    </div>
+                    <button id="getStartedBtn" class="btn btn--primary btn--large">Get Started</button>
+                </div>
+
+                <div class="features">
+                    <h2>Our Services</h2>
+                    <div class="features-grid">
+                        <div class="feature-card" data-section="consultation">
+                            <div class="feature-icon">👨‍⚕️</div>
+                            <h3>Video Consultations</h3>
+                            <p>Book appointments with qualified doctors via video call</p>
+                        </div>
+                        <div class="feature-card" data-section="records">
+                            <div class="feature-icon">📋</div>
+                            <h3>Digital Health Records</h3>
+                            <p>Access your medical history anytime, anywhere</p>
+                        </div>
+                        <div class="feature-card" data-section="pharmacy">
+                            <div class="feature-icon">🏪</div>
+                            <h3>Pharmacy Locator</h3>
+                            <p>Find nearby pharmacies and check medicine availability</p>
+                        </div>
+                        <div class="feature-card" data-section="symptom-checker">
+                            <div class="feature-icon">🤖</div>
+                            <h3>AI Symptom Checker</h3>
+                            <p>Get preliminary health assessment using AI</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <div class="container">
+                <h2>Patient Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Patient Information</h3>
+                        <div class="patient-info">
+                            <p><strong>Name:</strong> <span id="patientName">Gurpreet Singh</span></p>
+                            <p><strong>Age:</strong> <span id="patientAge">45</span></p>
+                            <p><strong>Village:</strong> <span id="patientVillage">Ghanaur</span></p>
+                            <p><strong>Blood Group:</strong> <span id="patientBloodGroup">B+</span></p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Upcoming Appointments</h3>
+                        <div id="upcomingAppointments">
+                            <div class="appointment-item">
+                                <h4>Dr. Rajesh Kumar</h4>
+                                <p>Date: Sep 15, 2025</p>
+                                <p>Time: 10:30 AM</p>
+                                <p>Status: <span class="status status--success">Confirmed</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Recent Records</h3>
+                        <div id="recentRecords">
+                            <div class="record-item">
+                                <h4>Consultation</h4>
+                                <p>Date: Sep 01, 2025</p>
+                                <p>Seasonal Fever: Paracetamol 500mg twice daily</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="btn btn--primary" data-section="consultation">Book Consultation</button>
+                            <button class="btn btn--secondary" data-section="records">View Records</button>
+                            <button class="btn btn--secondary" data-section="pharmacy">Find Pharmacy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consultation Section -->
+        <section id="consultation" class="section">
+            <div class="container">
+                <h2>Book a Consultation</h2>
+                <div class="consultation-content">
+                    <div class="doctors-section">
+                        <h3>Select a Doctor</h3>
+                        <div id="doctorsList" class="doctors-grid">
+                            <!-- Doctors populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="booking-section">
+                        <h3>Appointment Details</h3>
+                        <form id="bookingForm" class="booking-form">
+                            <div class="form-group">
+                                <label for="selectedDoctor">Selected Doctor</label>
+                                <input type="text" id="selectedDoctor" class="form-control" readonly placeholder="Select a doctor first">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="appointmentDate">Date</label>
+                                    <input type="date" id="appointmentDate" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentTime">Time</label>
+                                    <select id="appointmentTime" class="form-control" required>
+                                        <option value="">Select Time</option>
+                                        <option value="09:00">09:00 AM</option>
+                                        <option value="10:00">10:00 AM</option>
+                                        <option value="11:00">11:00 AM</option>
+                                        <option value="14:00">02:00 PM</option>
+                                        <option value="15:00">03:00 PM</option>
+                                        <option value="16:00">04:00 PM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="symptoms">Symptoms/Reason for Visit</label>
+                                <textarea id="symptoms" class="form-control" rows="4" placeholder="Describe your symptoms or reason for consultation"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Consultation Type</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="consultationType" value="video" checked>
+                                        <span>Video Call</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="consultationType" value="audio">
+                                        <span>Audio Only</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn--primary btn--large">Book Appointment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health Records Section -->
+        <section id="records" class="section">
+            <div class="container">
+                <h2>Your Health Records</h2>
+                <div class="records-tabs">
+                    <button class="tab-btn active" data-tab="recordsTimeline">Timeline</button>
+                    <button class="tab-btn" data-tab="prescriptions">Prescriptions</button>
+                    <button class="tab-btn" data-tab="labReports">Lab Reports</button>
+                </div>
+                
+                <div id="recordsTimeline" class="tab-content active">
+                    <div class="timeline">
+                        <!-- Timeline populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div id="prescriptions" class="tab-content">
+                    <p>Your prescription history will appear here.</p>
+                </div>
+                
+                <div id="labReports" class="tab-content">
+                    <p>Your lab reports will appear here.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pharmacy Section -->
+        <section id="pharmacy" class="section">
+            <div class="container">
+                <h2>Pharmacy Locator</h2>
+                <div class="pharmacy-search">
+                    <div class="search-bar">
+                        <input type="text" id="medicineSearch" class="form-control" placeholder="Search for medicines...">
+                        <button id="searchMedicine" class="btn btn--primary">Search</button>
+                    </div>
+                </div>
+                <div id="pharmaciesList" class="pharmacies-grid">
+                    <!-- Pharmacies populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Symptom Checker Section -->
+        <section id="symptom-checker" class="section">
+            <div class="container">
+                <h2>AI Symptom Checker</h2>
+                <p class="disclaimer">⚠️ This tool provides preliminary guidance only. For serious symptoms, consult a doctor immediately.</p>
+                
+                <form id="symptomForm" class="symptom-form">
+                    <div class="form-group">
+                        <label for="symptomCategory">What type of symptoms are you experiencing?</label>
+                        <select id="symptomCategory" class="form-control" required>
+                            <option value="">Select a category</option>
+                            <option value="fever">Fever & General</option>
+                            <option value="digestive">Digestive Issues</option>
+                            <option value="respiratory">Respiratory Problems</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select your specific symptoms:</label>
+                        <div id="symptomsList" class="symptoms-checkboxes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="severity">How severe are your symptoms?</label>
+                            <select id="severity" name="severity" class="form-control" required>
+                                <option value="">Select severity</option>
+                                <option value="mild">Mild</option>
+                                <option value="moderate">Moderate</option>
+                                <option value="severe">Severe</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="symptomDuration">How long have you had these symptoms?</label>
+                            <select id="symptomDuration" name="symptomDuration" class="form-control" required>
+                                <option value="">Select duration</option>
+                                <option value="less-than-day">Less than a day</option>
+                                <option value="1-3-days">1-3 days</option>
+                                <option value="3-7-days">3-7 days</option>
+                                <option value="more-than-week">More than a week</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional notes (optional)</label>
+                        <textarea id="additionalNotes" name="additionalNotes" class="form-control" rows="3" placeholder="Any additional information about your symptoms"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn--primary btn--large">Analyze Symptoms</button>
+                </form>
+
+                <div id="symptomResults" class="symptom-results hidden">
+                    <h3>Analysis Results</h3>
+                    <div id="resultsContent">
+                        <!-- Results populated by JavaScript -->
+                    </div>
+                    <div class="results-actions">
+                        <button id="newSymptomCheck" class="btn btn--secondary">New Check</button>
+                        <button class="btn btn--primary" data-section="consultation">Book Consultation</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login to HealthConnect</h3>
+                <button id="closeLoginModal" class="modal-close">×</button>
+            </div>
+            <form id="loginForm" class="modal-body">
+                <div class="form-group">
+                    <label for="mobileNumber">Mobile Number</label>
+                    <input type="tel" id="mobileNumber" class="form-control" placeholder="Enter your 10-digit mobile number" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="sendOTP" class="btn btn--secondary">Send OTP</button>
+                </div>
+                <div class="form-group">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" id="otp" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6">
+                    <small>Demo OTP: 123456</small>
+                </div>
+                <button type="submit" class="btn btn--primary btn--large">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Emergency Modal -->
+    <div id="emergencyModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🚨 Emergency Contacts</h3>
+                <button id="closeEmergencyModal" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="emergency-contacts">
+                    <div class="emergency-item">
+                        <h4>National Emergency</h4>
+                        <a href="tel:108" class="btn btn--danger">📞 Call 108</a>
+                    </div>
+                    <div class="emergency-item">
+                        <h4>Nabha Civil Hospital</h4>
+                        <a href="tel:+919876543210" class="btn btn--primary">📞 Call Hospital</a>
+                    </div>
+                    <div class="emergency-item">
+                        <h4>Local Ambulance</h4>
+                        <a href="tel:102" class="btn btn--primary">📞 Call 102</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Call Modal -->
+    <div id="videoCallModal" class="modal hidden">
+        <div class="modal-content video-call">
+            <div class="video-header">
+                <h3>Video Consultation</h3>
+                <span id="callTimer">00:00</span>
+            </div>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <p>📹 Video call would appear here</p>
+                    <p>Connected with doctor...</p>
+                </div>
+            </div>
+            <div class="call-controls">
+                <button id="muteBtn" class="call-btn">🎤</button>
+                <button id="videoBtn" class="call-btn">📹</button>
+                <button id="screenShareBtn" class="call-btn">🖥️</button>
+                <button id="endCallBtn" class="call-btn call-btn--end">📞</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
