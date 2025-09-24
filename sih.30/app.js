@@ -130,7 +130,7 @@ const translations = {
         about: 'About',
         login: 'Login',
         emergency: '🚨 Emergency',
-        heroHeading: 'Telemedicine Access for Rural Healthcare in Nabha',
+        heroHeading: 'Telemedicine Access for Rural Healthcare ',
         heroSubheading: "Easy video consultations, digital health records, pharmacy finder, and AI symptom checker for Punjab's villages.",
         villagesServed: 'Villages Served',
         availability: 'Availability',
