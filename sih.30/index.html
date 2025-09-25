@@ -128,27 +128,29 @@
                 <div class="consultation-content">
                     <div class="doctors-section">
                         <h3 data-i18n="selectDoctor">Select a Doctor</h3>
-                        <div id="doctorsList" class="doctors-grid">
-                            </div>
-                    </div>
-                    
-                    <div class="booking-section">
-                        <h3 data-i18n="appointmentDetails">Appointment Details</h3>
-                        <form id="bookingForm" class="booking-form">
-                            
-                            <div class="form-group">
+                        
+                        <div class="form-row" style="margin-bottom: 20px; display: flex; gap: 10px;">
+                            <div class="form-group" style="flex: 1;">
                                 <label for="selectState">Select State</label>
                                 <select id="selectState" class="form-control" required>
                                     <option value="" disabled selected>Select a State</option>
                                     </select>
                             </div>
-
-                            <div class="form-group">
+                            <div class="form-group" style="flex: 1;">
                                 <label for="selectDistrict">Select District/City</label>
                                 <select id="selectDistrict" class="form-control" disabled required>
                                     <option value="" disabled selected>Select a District/City</option>
                                     </select>
                             </div>
+                        </div>
+                        <div id="doctorsList" class="doctors-grid">
+                            <p style="text-align: center; padding: 20px;" data-i18n="selectLocationPrompt">Please select a State and District/City to view available doctors.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-section">
+                        <h3 data-i18n="appointmentDetails">Appointment Details</h3>
+                        <form id="bookingForm" class="booking-form">
                             
                             <div class="form-group">
                                 <label for="selectedDoctor" data-i18n="selectedDoctorLabel">Selected Doctor</label>

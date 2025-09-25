@@ -1,7 +1,53 @@
 // Telemedicine Application JavaScript - Complete Version
 
+// =================================================================
+// DOCTOR GENERATION UTILITY FUNCTIONS
+// =================================================================
+
+const DOCTOR_SPECIALIZATIONS = ["General Medicine", "Pediatrics", "Cardiology", "Dermatology", "Orthopaedics", "Neurology", "Gastroenterology", "Ophthalmology", "Urology", "Gynecology", "Pulmonology", "Endocrinology", "ENT", "Psychiatry", "Oncology"];
+const INDIAN_NAMES_PREFIX = ["Dr. Anjali", "Dr. Rohan", "Dr. Priya", "Dr. Vivek", "Dr. Meena", "Dr. Harish", "Dr. Zoya", "Dr. Karan", "Dr. Lata", "Doguu", "Dr. Chetan", "Dr. Revathi", "Dr. Leela", "Dr. Naveen", "Dr. Shanti"];
+const INDIAN_NAMES_SUFFIX = ["Sharma", "Kumar", "Singh", "Rao", "Joshi", "Verma", "Mirza", "Gowda", "Hegde", "Reddy", "Menon", "Bhat", "Patil", "Harihar", "Patil","Biradar","Shetty","Adalli","Dage","Naik","Chavan","More","Gadekar","Jadhav","Deshmukh"];
+
+/**
+ * Generates a list of unique, realistic doctors for a specific location.
+ * This is the function that creates 10 doctors for any selected district.
+ */
+function generateLocalDoctors(count, state, district) {
+    const doctors = [];
+    
+    for (let i = 0; i < count; i++) {
+        const baseId = (district.charCodeAt(0) * i) % 10000;
+        
+        const randomPrefix = INDIAN_NAMES_PREFIX[Math.floor(Math.random() * INDIAN_NAMES_PREFIX.length)];
+        const randomSuffix = INDIAN_NAMES_SUFFIX[Math.floor(Math.random() * INDIAN_NAMES_SUFFIX.length)];
+        
+        let primaryLocalLang = "English";
+        if (state === "Karnataka") primaryLocalLang = "Kannada";
+        else if (state === "Tamil Nadu") primaryLocalLang = "Tamil";
+        else if (state === "Andhra Pradesh" || state === "Telangana") primaryLocalLang = "Telugu";
+        else if (state === "Maharashtra") primaryLocalLang = "Marathi";
+        else primaryLocalLang = "Hindi";
+        
+        doctors.push({
+            id: baseId + i + 1,
+            name: `${randomPrefix} ${randomSuffix}`,
+            specialization: DOCTOR_SPECIALIZATIONS[i % DOCTOR_SPECIALIZATIONS.length],
+            experience: Math.floor(Math.random() * 20) + 5, // 5 to 24 years
+            languages: ["Hindi", "English", primaryLocalLang].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3),
+            availability: `${(9 + (i % 4))} AM - ${((17 + (i % 3)) % 24)} PM`,
+            rating: (Math.random() * 0.6 + 4.2).toFixed(1), // 4.2 to 4.8
+            consultationFee: 149, 
+            state: state,
+            district: district
+        });
+    }
+    return doctors;
+}
+
 // Application data
 const appData = {
+    // Hardcoded doctors list is now only used for dashbord examples, 
+    // but the structure is important.
     doctors: [
         {
             id: 1,
@@ -10,7 +56,8 @@ const appData = {
             experience: 15,
             languages: ["Hindi", "English"],
             availability: "9 AM - 5 PM",
-            rating: 4.8
+            rating: 4.8,
+            consultationFee: 149
         },
         {
             id: 2,
@@ -19,7 +66,8 @@ const appData = {
             experience: 12,
             languages: ["Hindi", "English"],
             availability: "10 AM - 6 PM",
-            rating: 4.9
+            rating: 4.9,
+            consultationFee: 149
         },
         {
             id: 3,
@@ -28,7 +76,8 @@ const appData = {
             experience: 20,
             languages: ["Hindi", "English", "Kannada"],
             availability: "2 PM - 8 PM",
-            rating: 4.7
+            rating: 4.7,
+            consultationFee: 149
         }
     ],
     pharmacies: [
@@ -113,7 +162,7 @@ const appData = {
 };
 
 // =================================================================
-// ADDED: INDIAN STATES AND DISTRICTS DATA FOR BOOK CONSULTATION
+// INDIAN STATES AND DISTRICTS DATA 
 // =================================================================
 const indianStatesAndDistricts = {
     "Andhra Pradesh": ["Anantapur", "Chittoor", "East Godavari", "Guntur", "Krishna", "Kurnool", "Nellore", "Prakasam", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"],
@@ -304,16 +353,19 @@ const translations = {
         generalCareRecommended: 'General care recommended',
         immediateMedicalAttention: 'Immediate medical attention required',
         medicalConsultationRecommended: 'Medical consultation recommended',
-        difficulty: 'difficulty',
-        chestPain: 'chest pain',
-        preliminaryAnalysis: 'Preliminary Analysis:',
         priorityLabel: 'Priority:',
         urgent: 'URGENT',
         moderate: 'MODERATE',
         routine: 'ROUTINE',
         symptomsIdentified: 'Symptoms identified:',
         recommendationLabel: 'Recommendation:',
-        endCallConfirm: 'Are you sure you want to end the call?'
+        endCallConfirm: 'Are you sure you want to end the call?',
+        // Consultation Fee Label (NEW)
+        consultationFeeLabel: 'Fee:',
+        selectLocationPrompt: 'Please select a State and District/City to view available doctors.',
+        selectStateDistrictAlert: 'Please select both a State and a District/City for your location.',
+        selectDistrictPrompt: 'Please select a District/City to view available doctors.',
+        noDoctorsFound: 'No doctors found in this location. Please try another area.'
     },
     hi: {
         pageTitle: 'हेल्थकनेक्ट - ग्रामीण टेलीमेडिसिन प्लेटफॉर्म',
@@ -457,16 +509,18 @@ const translations = {
         generalCareRecommended: 'सामान्य देखभाल की सलाह दी जाती है',
         immediateMedicalAttention: 'तत्काल चिकित्सा ध्यान देने की आवश्यकता है',
         medicalConsultationRecommended: 'चिकित्सा परामर्श की सलाह दी जाती है',
-        difficulty: 'difficulty',
-        chestPain: 'chest pain',
-        preliminaryAnalysis: 'प्रारंभिक विश्लेषण:',
         priorityLabel: 'प्राथमिकता:',
         urgent: 'अत्यावश्यक',
         moderate: 'मध्यम',
         routine: 'नियमित',
         symptomsIdentified: 'पहचाने गए लक्षण:',
         recommendationLabel: 'सिफारिश:',
-        endCallConfirm: 'क्या आप वाकई कॉल समाप्त करना चाहते हैं?'
+        endCallConfirm: 'क्या आप वाकई कॉल समाप्त करना चाहते हैं?',
+        consultationFeeLabel: 'शुल्क:',
+        selectLocationPrompt: 'उपलब्ध डॉक्टरों को देखने के लिए कृपया एक राज्य और ज़िला/शहर चुनें।',
+        selectStateDistrictAlert: 'कृपया अपनी स्थान के लिए राज्य और ज़िला/शहर दोनों का चयन करें।',
+        selectDistrictPrompt: 'उपलब्ध डॉक्टरों को देखने के लिए कृपया एक ज़िला/शहर चुनें।',
+        noDoctorsFound: 'इस स्थान पर कोई डॉक्टर नहीं मिला। कृपया कोई दूसरा क्षेत्र आज़माएँ।'
     },
     kn: {
         pageTitle: 'ಹೆಲ್ತ್‌ಕನೆಕ್ಟ್ - ಗ್ರಾಮೀಣ ಟೆಲಿಮೆಡಿಸಿನ್ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್',
@@ -610,16 +664,17 @@ const translations = {
         generalCareRecommended: 'ಸಾಮಾನ್ಯ ಆರೈಕೆಯನ್ನು ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ',
         immediateMedicalAttention: 'ತಕ್ಷಣದ ವೈದ್ಯಕೀಯ ಆರೈಕೆಯ ಅಗತ್ಯವಿದೆ',
         medicalConsultationRecommended: 'ವೈದ್ಯಕೀಯ ಸಮಾಲೋಚನೆ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ',
-        difficulty: 'difficulty',
-        chestPain: 'chest pain',
-        preliminaryAnalysis: 'ಪ್ರಾಥಮಿಕ ವಿಶ್ಲೇಷಣೆ:',
         priorityLabel: 'ಆದ್ಯತೆ:',
         urgent: 'ತುರ್ತು',
         moderate: 'ಮಧ್ಯಮ',
         routine: 'ನಿಯಮಿತ',
         symptomsIdentified: 'ಗುರುತಿಸಿದ ರೋಗಲಕ್ಷಣಗಳು:',
         recommendationLabel: 'ಶಿಫಾರಸು:',
-        endCallConfirm: 'ನೀವು ನಿಜವಾಗಿಯೂ ಕರೆಯನ್ನು ಕೊನೆಗೊಳಿಸಲು ಬಯಸುವಿರಾ?'
+        endCallConfirm: 'ನೀವು ನಿಜವಾಗಿಯೂ ಕರೆಯನ್ನು ಕೊನೆಗೊಳಿಸಲು ಬಯಸುವಿರಾ?',
+        selectLocationPrompt: 'ಲಭ್ಯವಿರುವ ವೈದ್ಯರನ್ನು ನೋಡಲು ದಯವಿಟ್ಟು ಒಂದು ರಾಜ್ಯ ಮತ್ತು ಜಿಲ್ಲೆ/ನಗರವನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+        selectStateDistrictAlert: 'ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸ್ಥಳಕ್ಕಾಗಿ ರಾಜ್ಯ ಮತ್ತು ಜಿಲ್ಲೆ/ನಗರ ಎರಡನ್ನೂ ಆಯ್ಕೆಮಾಡಿ.',
+        selectDistrictPrompt: 'ಲಭ್ಯವಿರುವ ವೈದ್ಯರನ್ನು ನೋಡಲು ದಯವಿಟ್ಟು ಜಿಲ್ಲೆ/ನಗರವನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+        noDoctorsFound: 'ಈ ಸ್ಥಳದಲ್ಲಿ ಯಾವುದೇ ವೈದ್ಯರು ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಬೇರೆ ಪ್ರದೇಶವನ್ನು ಪ್ರಯತ್ನಿಸಿ।'
     }
 };
 
@@ -628,6 +683,9 @@ let currentLanguage = 'en',
     currentUser = null,
     selectedDoctor = null,
     isLoggedIn = false;
+
+// Store the currently displayed generated doctors for selection validation
+let currentLocalDoctors = []; 
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -640,7 +698,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize application
 function initializeApp() {
-    // Set minimum date for appointments to today
     const today = new Date().toISOString().split('T')[0];
     const appointmentDateInput = document.getElementById('appointmentDate');
     if (appointmentDateInput) {
@@ -648,17 +705,14 @@ function initializeApp() {
         appointmentDateInput.value = today;
     }
 
-    // Initialize language
     updateLanguage(currentLanguage);
     console.log('App initialized successfully');
 }
 
 // Setup all event listeners
 function setupEventListeners() {
-    // Navigation
     setupNavigation();
     
-    // Language selector
     const languageSelect = document.getElementById('languageSelect');
     if (languageSelect) {
         languageSelect.addEventListener('change', function(e) {
@@ -666,7 +720,6 @@ function setupEventListeners() {
         });
     }
 
-    // Mobile menu
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const nav = document.getElementById('nav');
     if (mobileMenuToggle && nav) {
@@ -676,37 +729,17 @@ function setupEventListeners() {
         });
     }
 
-    // Login/Auth
     setupAuthEvents();
-
-    // Feature cards navigation
     setupFeatureNavigation();
-
-    // Doctor selection
     setupDoctorSelection();
-
-    // Booking form
     setupBookingForm();
-
-    // NEW: State/District Logic
-    setupStateDistrictSelection(); // <--- ADDED THIS CALL
-
-    // Records tabs
+    setupStateDistrictSelection(); 
     setupRecordsTabs();
-
-    // Pharmacy search
     setupPharmacySearch();
-
-    // Symptom checker
     setupSymptomChecker();
-
-    // Emergency modal
     setupEmergencyModal();
-
-    // Video call controls
     setupVideoCallControls();
 
-    // Get started button
     const getStartedBtn = document.getElementById('getStartedBtn');
     if (getStartedBtn) {
         getStartedBtn.addEventListener('click', function(e) {
@@ -732,14 +765,12 @@ function setupNavigation() {
             const section = this.getAttribute('data-section');
             
             if (section) {
-                // Special handling for symptom checker - no login required
                 if (section === 'symptom-checker') {
                     showSection(section);
                     updateActiveNavLink(this);
                     return;
                 }
                 
-                // Check if login required for certain sections
                 if (!isLoggedIn && ['consultation', 'records', 'pharmacy', 'dashboard'].includes(section)) {
                     showModal('loginModal');
                     return;
@@ -751,7 +782,6 @@ function setupNavigation() {
         });
     });
 
-    // Handle "About" link
     const aboutLinks = document.querySelectorAll('.nav-link:not([data-section])');
     aboutLinks.forEach(link => {
         if (link.textContent.includes(translations[currentLanguage].about)) {
@@ -767,25 +797,21 @@ function setupNavigation() {
 function showSection(sectionId) {
     console.log('Showing section:', sectionId);
     
-    // Hide all sections
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
         section.classList.remove('active');
     });
 
-    // Show target section
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add('active');
     }
 
-    // Close mobile menu if open
     const nav = document.getElementById('nav');
     if (nav && nav.classList.contains('open')) {
         nav.classList.remove('open');
     }
 
-    // Update page title
     updatePageTitle(sectionId);
 }
 
@@ -836,7 +862,6 @@ function updateLanguage(language) {
         }
     });
     
-    // Re-populate dynamic content after language switch
     populateInitialData();
     if(isLoggedIn) {
         updateDashboardData();
@@ -896,14 +921,14 @@ function simulateOTPSend() {
     sendOTPBtn.disabled = true;
     
     setTimeout(() => {
-        sendOTPBtn.textContent = 'Resend OTP'; // Note: This is not translated for simplicity
+        sendOTPBtn.textContent = 'Resend OTP';
         sendOTPBtn.disabled = false;
-        document.getElementById('otp').value = '123456'; // Pre-fill for demo
+        document.getElementById('otp').value = '123456';
         alert(translations[currentLanguage].demoOTPSmall);
     }, 2000);
 }
 
-// Simulate login
+// Simulate login (FIXED alert message)
 function simulateLogin() {
     const mobileNumber = document.getElementById('mobileNumber').value;
     const otp = document.getElementById('otp').value;
@@ -923,7 +948,7 @@ function simulateLogin() {
         showSection('dashboard');
         updateDashboardData();
     } else {
-        alert(translations[currentLanguage].invalidOTPAlert);
+        alert("Invalid Mobile Number or OTP. Demo OTP is 123456.");
     }
 }
 
@@ -963,7 +988,6 @@ function setupFeatureNavigation() {
                 } else {
                     showSection(section);
                     
-                    // Update nav active state
                     const navLink = document.querySelector(`.nav-link[data-section="${section}"]`);
                     if (navLink) {
                         updateActiveNavLink(navLink);
@@ -976,7 +1000,21 @@ function setupFeatureNavigation() {
 
 // Populate initial data
 function populateInitialData() {
-    populateDoctors();
+    // Call populateDoctors to load the initial 3 hardcoded doctors
+    populateDoctors(appData.doctors); 
+    
+    // Setup initial State/District dropdown prompts
+    const stateSelect = document.getElementById('selectState');
+    const districtSelect = document.getElementById('selectDistrict');
+    if (stateSelect && districtSelect) {
+        // Populating states so the dropdown starts working immediately
+        const states = Object.keys(indianStatesAndDistricts).sort();
+        stateSelect.innerHTML = '<option value="" disabled selected>Select a State</option>' + 
+                                states.map(state => `<option value="${state}">${state}</option>`).join('');
+        districtSelect.innerHTML = '<option value="" disabled selected>Select a District/City</option>';
+        districtSelect.disabled = true;
+    }
+    
     populatePharmacies();
     populateHealthTimeline();
     console.log('Initial data populated');
@@ -986,7 +1024,6 @@ function populateInitialData() {
 function updateDashboardData() {
     if (!currentUser) return;
 
-    // Update patient info
     const patientNameEl = document.getElementById('patientName');
     const patientAgeEl = document.getElementById('patientAge');
     const patientVillageEl = document.getElementById('patientVillage');
@@ -997,10 +1034,7 @@ function updateDashboardData() {
     if (patientVillageEl) patientVillageEl.textContent = currentUser.village;
     if (patientBloodGroupEl) patientBloodGroupEl.textContent = currentUser.bloodGroup;
 
-    // Populate upcoming appointments
     populateUpcomingAppointments();
-    
-    // Populate recent records
     populateRecentRecords();
 }
 
@@ -1024,36 +1058,32 @@ function populateUpcomingAppointments() {
     });
 }
 
-// Populate recent records
-function populateRecentRecords() {
-    const container = document.getElementById('recentRecords');
-    if (!container) return;
-
-    container.innerHTML = '';
-    
-    appData.healthRecords.slice(0, 2).forEach(record => {
-        const recordDiv = document.createElement('div');
-        recordDiv.className = 'record-item';
-        recordDiv.innerHTML = `
-            <h4>${translations[currentLanguage].consultation}</h4>
-            <p>${translations[currentLanguage].date} ${formatDate(record.date)}</p>
-            <p>${record.diagnosis || record.test}: ${record.prescription || record.result}</p>
-        `;
-        container.appendChild(recordDiv);
-    });
-}
-
-// Populate doctors list
-function populateDoctors() {
+/**
+ * FIXED: Populates the doctors list using the provided list (either hardcoded or generated).
+ * **Includes the ₹149 Consultation Fee display.**
+ * @param {Array<Object>} doctorsList - The list of doctors to render.
+ */
+function populateDoctors(doctorsList) {
     const container = document.getElementById('doctorsList');
     if (!container) return;
 
+    // Store the list for the selection click handler to retrieve details (including fee)
+    currentLocalDoctors = doctorsList;
+    
     container.innerHTML = '';
     
-    appData.doctors.forEach(doctor => {
+    if (doctorsList.length === 0) {
+        container.innerHTML = `<p style="text-align: center; padding: 20px;">${translations[currentLanguage].noDoctorsFound}</p>`;
+        return;
+    }
+
+    doctorsList.forEach(doctor => {
         const doctorDiv = document.createElement('div');
         doctorDiv.className = 'doctor-card';
         doctorDiv.setAttribute('data-doctor-id', doctor.id);
+        
+        // Fee is guaranteed to be 149 either from generateLocalDoctors or the hardcoded list
+        const fee = doctor.consultationFee || 149; 
         
         doctorDiv.innerHTML = `
             <div class="doctor-header">
@@ -1070,17 +1100,21 @@ function populateDoctors() {
                 <span>${translations[currentLanguage].languagesLabel} ${doctor.languages.join(', ')}</span>
                 <span>${translations[currentLanguage].availableLabel} ${doctor.availability}</span>
             </div>
+            <div class="doctor-fee">
+                <strong>${translations[currentLanguage].consultationFeeLabel}</strong> 
+                <span class="fee-amount">₹${fee}</span>
+            </div>
         `;
         
         container.appendChild(doctorDiv);
     });
 }
 
-// Setup doctor selection
+// Setup doctor selection (FIXED to ensure selectedDoctor object has the fee property)
 function setupDoctorSelection() {
     document.addEventListener('click', function(e) {
-        if (e.target.closest('.doctor-card')) {
-            const doctorCard = e.target.closest('.doctor-card');
+        const doctorCard = e.target.closest('.doctor-card');
+        if (doctorCard) {
             const doctorId = parseInt(doctorCard.getAttribute('data-doctor-id'));
             
             // Remove previous selection
@@ -1091,13 +1125,31 @@ function setupDoctorSelection() {
             // Add selection to clicked card
             doctorCard.classList.add('selected');
             
-            // Update selected doctor
-            selectedDoctor = appData.doctors.find(doctor => doctor.id === doctorId);
+            // Retrieve doctor details from the current list (currentLocalDoctors/appData.doctors)
+            let doctorDetails = currentLocalDoctors.find(d => d.id === doctorId);
             
-            // Update form
+            // If not found in generated list (initial load), check hardcoded list
+            if (!doctorDetails) {
+                 doctorDetails = appData.doctors.find(d => d.id === doctorId);
+            }
+
+            if (doctorDetails) {
+                // Set selectedDoctor with all details, including the fee
+                selectedDoctor = {
+                    id: doctorDetails.id,
+                    name: doctorDetails.name,
+                    specialization: doctorDetails.specialization,
+                    consultationFee: doctorDetails.consultationFee || 149
+                };
+            } else {
+                 selectedDoctor = null;
+            }
+
+            // Update form input field
             const selectedDoctorInput = document.getElementById('selectedDoctor');
             if (selectedDoctorInput && selectedDoctor) {
-                selectedDoctorInput.value = `${selectedDoctor.name} - ${selectedDoctor.specialization}`;
+                const fee = selectedDoctor.consultationFee || 149;
+                selectedDoctorInput.value = `${selectedDoctor.name} - ${selectedDoctor.specialization} (Fee: ₹${fee})`;
             }
         }
     });
@@ -1113,7 +1165,6 @@ function setupBookingForm() {
         });
     }
 
-    // Setup dashboard quick booking buttons
     const quickBookingBtns = document.querySelectorAll('button[data-section="consultation"]');
     quickBookingBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -1134,15 +1185,14 @@ function handleBookingSubmission() {
         return;
     }
 
-    // NEW: Check for State/District selection
+    // Since we are using the location dropdowns:
     const selectedState = document.getElementById('selectState').value;
     const selectedDistrict = document.getElementById('selectDistrict').value;
     
     if (!selectedState || !selectedDistrict) {
-        alert("Please select both a State and a District/City for your location.");
+        alert(translations[currentLanguage].selectStateDistrictAlert);
         return;
     }
-    // END NEW CHECK
 
     const appointmentDate = document.getElementById('appointmentDate').value;
     const appointmentTime = document.getElementById('appointmentTime').value;
@@ -1170,14 +1220,15 @@ function handleBookingSubmission() {
             time: appointmentTime,
             status: 'Confirmed',
             type: consultationType === 'video' ? 'Video Consultation' : 'Audio Consultation',
-            location: `${selectedDistrict}, ${selectedState}` // Store the new location data
+            location: `${selectedDistrict}, ${selectedState}`,
+            fee: selectedDoctor.consultationFee || 149
         };
         
         appData.appointments.unshift(newAppointment);
         
         alert(translations[currentLanguage].bookingSuccessAlert);
         
-        // Reset form (including new dropdowns)
+        // Reset form 
         document.getElementById('bookingForm').reset();
         document.querySelectorAll('.doctor-card').forEach(card => {
             card.classList.remove('selected');
@@ -1185,6 +1236,12 @@ function handleBookingSubmission() {
         selectedDoctor = null;
         const selectedDoctorInput = document.getElementById('selectedDoctor');
         if (selectedDoctorInput) selectedDoctorInput.value = '';
+
+        // Clear doctor list and show prompt after successful booking
+        const doctorsContainer = document.getElementById('doctorsList');
+        if (doctorsContainer) {
+            doctorsContainer.innerHTML = `<p style="text-align: center; padding: 20px;">${translations[currentLanguage].selectLocationPrompt}</p>`;
+        }
         
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
@@ -1201,41 +1258,30 @@ function handleBookingSubmission() {
     }, 2000);
 }
 
-// =================================================================
-// NEW: STATE AND DISTRICT SELECTION LOGIC
-// =================================================================
+// State/District Logic (FIXED: Fully implemented the cascading dropdowns)
 function setupStateDistrictSelection() {
     const stateSelect = document.getElementById('selectState');
     const districtSelect = document.getElementById('selectDistrict');
 
     if (!stateSelect || !districtSelect) {
-        // This is fine, means the HTML hasn't been updated yet, but the JS should not error
         return;
     }
 
-    // 1. Function to populate the State Dropdown
-    function populateStates() {
-        stateSelect.innerHTML = '<option value="" disabled selected>Select a State</option>';
-
-        // Get the list of state/UT names (keys) and sort them alphabetically
-        const states = Object.keys(indianStatesAndDistricts).sort();
-
-        states.forEach(state => {
-            const option = document.createElement('option');
-            option.value = state;
-            option.textContent = state;
-            stateSelect.appendChild(option);
-        });
-    }
-
+    // 1. Function to populate the State Dropdown (called in populateInitialData)
     // 2. Event listener for State change
     stateSelect.addEventListener('change', function() {
         const selectedState = this.value;
         
-        // Reset and disable District dropdown
-        districtSelect.innerHTML = '<option value="" disabled selected>Select a District/City</option>';
+        // Reset District dropdown and doctor list
+        districtSelect.innerHTML = `<option value="" disabled selected>${translations[currentLanguage].selectDistrictPrompt}</option>`;
         districtSelect.disabled = true;
         
+        // Clear doctors list when state changes
+        const doctorsContainer = document.getElementById('doctorsList');
+        if (doctorsContainer) {
+            doctorsContainer.innerHTML = `<p style="text-align: center; padding: 20px;">${translations[currentLanguage].selectDistrictPrompt}</p>`;
+        }
+
         if (selectedState && indianStatesAndDistricts[selectedState]) {
             const districts = indianStatesAndDistricts[selectedState].sort();
             
@@ -1252,13 +1298,37 @@ function setupStateDistrictSelection() {
         }
     });
 
-    // 3. Populate states on initial load
-    populateStates();
+    // 3. Event listener for District change to GENERATE and display doctors
+    districtSelect.addEventListener('change', function() {
+        const selectedState = stateSelect.value;
+        const selectedDistrict = this.value;
+
+        if (selectedState && selectedDistrict) {
+            // Generate 10 doctors for the selected location
+            populateDoctors(generateLocalDoctors(10, selectedState, selectedDistrict));
+        }
+    });
 }
-// =================================================================
 
 
-// Setup records tabs
+// Remaining helper functions (omitted for brevity, maintained original functionality)
+function populateRecentRecords() {
+    const container = document.getElementById('recentRecords');
+    if (!container) return;
+
+    container.innerHTML = '';
+    
+    appData.healthRecords.slice(0, 2).forEach(record => {
+        const recordDiv = document.createElement('div');
+        recordDiv.className = 'record-item';
+        recordDiv.innerHTML = `
+            <h4>${translations[currentLanguage].consultation}</h4>
+            <p>${translations[currentLanguage].date} ${formatDate(record.date)}</p>
+            <p>${record.diagnosis || record.test}: ${record.prescription || record.result}</p>
+        `;
+        container.appendChild(recordDiv);
+    });
+}
 function setupRecordsTabs() {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -1266,12 +1336,8 @@ function setupRecordsTabs() {
     tabBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const tabId = this.getAttribute('data-tab');
-            
-            // Update active tab button
             tabBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Update active tab content
             tabContents.forEach(content => content.classList.remove('active'));
             const targetContent = document.getElementById(tabId);
             if (targetContent) {
@@ -1280,8 +1346,6 @@ function setupRecordsTabs() {
         });
     });
 }
-
-// Populate health timeline
 function populateHealthTimeline() {
     const timeline = document.querySelector('#recordsTimeline .timeline');
     if (!timeline) return;
@@ -1308,8 +1372,6 @@ function populateHealthTimeline() {
         timeline.appendChild(timelineItem);
     });
 }
-
-// Populate pharmacies
 function populatePharmacies() {
     const container = document.getElementById('pharmaciesList');
     if (!container) return;
@@ -1355,8 +1417,6 @@ function populatePharmacies() {
         container.appendChild(pharmacyDiv);
     });
 }
-
-// Setup pharmacy search
 function setupPharmacySearch() {
     const searchBtn = document.getElementById('searchMedicine');
     const searchInput = document.getElementById('medicineSearch');
@@ -1373,13 +1433,11 @@ function setupPharmacySearch() {
         });
     }
 }
-
-// Perform medicine search
 function performMedicineSearch() {
     const searchTerm = document.getElementById('medicineSearch').value.toLowerCase().trim();
     
     if (!searchTerm) {
-        populatePharmacies(); // Show all pharmacies
+        populatePharmacies();
         return;
     }
     
@@ -1449,8 +1507,6 @@ function performMedicineSearch() {
         }
     }, 1000);
 }
-
-// Setup symptom checker
 function setupSymptomChecker() {
     const symptomForm = document.getElementById('symptomForm');
     const categorySelect = document.getElementById('symptomCategory');
@@ -1475,7 +1531,6 @@ function setupSymptomChecker() {
         });
     }
 
-    // Book consultation from symptom results
     const bookConsultationBtns = document.querySelectorAll('button[data-section="consultation"]');
     bookConsultationBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -1488,8 +1543,6 @@ function setupSymptomChecker() {
         });
     });
 }
-
-// Update symptoms list based on category
 function updateSymptomsList(category) {
     const container = document.getElementById('symptomsList');
     if (!container) return;
@@ -1510,8 +1563,6 @@ function updateSymptomsList(category) {
         });
     }
 }
-
-// Analyze symptoms
 function analyzeSymptoms() {
     const formData = new FormData(document.getElementById('symptomForm'));
     const category = formData.get('symptomCategory');
@@ -1525,7 +1576,6 @@ function analyzeSymptoms() {
         return;
     }
     
-    // Show loading
     const submitBtn = document.querySelector('#symptomForm button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.innerHTML = `<span class="loading"><span class="spinner"></span> ${translations[currentLanguage].analyzingText}</span>`;
@@ -1537,18 +1587,14 @@ function analyzeSymptoms() {
         submitBtn.disabled = false;
     }, 3000);
 }
-
-// Display symptom analysis results
 function displaySymptomResults(category, symptoms, severity, duration, notes) {
     const resultsContainer = document.getElementById('symptomResults');
     const resultsContent = document.getElementById('resultsContent');
     
     if (!resultsContainer || !resultsContent) return;
     
-    // Get category data
     const categoryData = appData.symptoms.find(s => s.category.toLowerCase() === category.toLowerCase());
     
-    // Generate AI-like analysis
     let recommendation = translations[currentLanguage].generalCareRecommended;
     let urgency = 'routine';
     
@@ -1580,15 +1626,11 @@ function displaySymptomResults(category, symptoms, severity, duration, notes) {
     resultsContainer.classList.remove('hidden');
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
 }
-
-// Reset symptom checker
 function resetSymptomChecker() {
     document.getElementById('symptomForm').reset();
     document.getElementById('symptomsList').innerHTML = '';
     document.getElementById('symptomResults').classList.add('hidden');
 }
-
-// Setup emergency modal
 function setupEmergencyModal() {
     const emergencyBtn = document.getElementById('emergencyBtn');
     const closeEmergencyModal = document.getElementById('closeEmergencyModal');
@@ -1606,8 +1648,6 @@ function setupEmergencyModal() {
         });
     }
 }
-
-// Setup video call controls
 function setupVideoCallControls() {
     const muteBtn = document.getElementById('muteBtn');
     const videoBtn = document.getElementById('videoBtn');
@@ -1641,14 +1681,10 @@ function setupVideoCallControls() {
         });
     }
 }
-
-// Show video call modal
 function showVideoCallModal() {
     showModal('videoCallModal');
     startCallTimer();
 }
-
-// Start call timer
 function startCallTimer() {
     const timer = document.getElementById('callTimer');
     if (!timer) return;
@@ -1660,14 +1696,11 @@ function startCallTimer() {
         const secs = seconds % 60;
         timer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         
-        // Stop timer when modal is hidden
         if (document.getElementById('videoCallModal').classList.contains('hidden')) {
             clearInterval(interval);
         }
     }, 1000);
 }
-
-// Show consultation summary
 function showConsultationSummary() {
     const timerEl = document.getElementById('callTimer');
     const duration = timerEl ? timerEl.textContent : '05:30';
@@ -1684,7 +1717,6 @@ function showConsultationSummary() {
     
     alert(summary);
     
-    // Add consultation to records
     const newRecord = {
         date: new Date().toISOString().split('T')[0],
         type: 'Consultation',
@@ -1697,8 +1729,6 @@ function showConsultationSummary() {
     appData.healthRecords.unshift(newRecord);
     populateHealthTimeline();
 }
-
-// Modal functions
 function showModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -1706,7 +1736,6 @@ function showModal(modalId) {
         document.body.style.overflow = 'hidden';
     }
 }
-
 function hideModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -1714,8 +1743,6 @@ function hideModal(modalId) {
         document.body.style.overflow = 'auto';
     }
 }
-
-// Close modals when clicking outside
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal')) {
         const modals = document.querySelectorAll('.modal');
@@ -1727,8 +1754,6 @@ document.addEventListener('click', function(e) {
         document.body.style.overflow = 'auto';
     }
 });
-
-// Check offline status
 function checkOfflineStatus() {
     const offlineIndicator = document.getElementById('offlineIndicator');
     
@@ -1745,11 +1770,8 @@ function checkOfflineStatus() {
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
     
-    // Initial check
     updateOnlineStatus();
 }
-
-// Utility functions
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-IN', {
@@ -1758,8 +1780,6 @@ function formatDate(dateString) {
         day: 'numeric'
     });
 }
-
-// Export functions for global access
 window.showSection = showSection;
 window.showModal = showModal;
 window.hideModal = hideModal;
@@ -1770,18 +1790,15 @@ const chatbotInput = document.getElementById('chatbot-input-field');
 const chatbotSendBtn = document.getElementById('chatbot-send-btn');
 const chatbotMessages = document.getElementById('chatbot-messages');
 
-// Toggle chat window
 chatbotCircle.addEventListener('click', () => {
     chatbotWindow.classList.toggle('hidden');
     chatbotInput.focus();
 });
 
-// Send message
 function sendMessage() {
     const message = chatbotInput.value.trim();
     if (!message) return;
 
-    // Display user message
     const userMsg = document.createElement('div');
     userMsg.classList.add('user-message');
     userMsg.textContent = message;
@@ -1790,7 +1807,6 @@ function sendMessage() {
     chatbotInput.value = '';
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
-    // Simulate bot response (replace this with AI API call)
     setTimeout(() => {
         const botMsg = document.createElement('div');
         botMsg.classList.add('bot-message');
@@ -1800,7 +1816,6 @@ function sendMessage() {
     }, 800);
 }
 
-// Event listeners
 chatbotSendBtn.addEventListener('click', sendMessage);
 chatbotInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
