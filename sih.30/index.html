@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="pageTitle">HealthConnect - Rural Telemedicine Platform</title>
     <link rel="stylesheet" href="style.css">
-</head>
+    </head>
 <body>
     <div id="offlineIndicator" class="offline-banner hidden">
         🔴 <span data-i18n="offlineIndicator">You are offline. Some features are unavailable.</span>
@@ -135,10 +135,26 @@
                     <div class="booking-section">
                         <h3 data-i18n="appointmentDetails">Appointment Details</h3>
                         <form id="bookingForm" class="booking-form">
+                            
+                            <div class="form-group">
+                                <label for="selectState">Select State</label>
+                                <select id="selectState" class="form-control" required>
+                                    <option value="" disabled selected>Select a State</option>
+                                    </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="selectDistrict">Select District/City</label>
+                                <select id="selectDistrict" class="form-control" disabled required>
+                                    <option value="" disabled selected>Select a District/City</option>
+                                    </select>
+                            </div>
+                            
                             <div class="form-group">
                                 <label for="selectedDoctor" data-i18n="selectedDoctorLabel">Selected Doctor</label>
                                 <input type="text" id="selectedDoctor" class="form-control" readonly data-i18n-placeholder="selectDoctorPlaceholder" placeholder="Select a doctor first">
                             </div>
+                            
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="appointmentDate" data-i18n="dateLabel">Date</label>
@@ -157,10 +173,12 @@
                                     </select>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="symptoms" data-i18n="symptomsLabel">Symptoms/Reason for Visit</label>
                                 <textarea id="symptoms" class="form-control" rows="4" data-i18n-placeholder="symptomsPlaceholder" placeholder="Describe your symptoms or reason for consultation"></textarea>
                             </div>
+                            
                             <div class="form-group">
                                 <label data-i18n="consultationTypeLabel">Consultation Type</label>
                                 <div class="radio-group">
@@ -180,7 +198,6 @@
                 </div>
             </div>
         </section>
-
         <section id="records" class="section">
             <div class="container">
                 <h2 data-i18n="healthRecordsHeading">Your Health Records</h2>
